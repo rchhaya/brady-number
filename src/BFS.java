@@ -18,7 +18,6 @@ public class BFS {
     public ArrayList<Player> bfsTraversal(Player src, Player tgt) {
         
         ArrayList<Player> path = new ArrayList<Player>();
-        
         //Initialize the player HashMap for each player 
         for (Map.Entry<Player, ArrayList<Player>> entry : graph.entrySet()) {
             parent.put(entry.getKey(), null);
@@ -46,7 +45,7 @@ public class BFS {
                     if (!discovered.contains(p)) {
                         discovered.add(p);
                         queue.add(p);
-                        parent.put(curr, p);
+                        parent.put(p,curr);
                         nextLayer.add(p);
                     }
                 }

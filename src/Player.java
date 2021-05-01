@@ -4,7 +4,7 @@ import java.util.HashMap;
 public class Player {
 
     
-    private String name, team;
+    private String name, team, position;
     private int year;
 
     //Stores the team key to the list of all years that a player played for that team
@@ -16,10 +16,12 @@ public class Player {
     }
     
     //Constructor for each player
-    public Player(String name, String team, int year) {
+    public Player(String name, String team, int year, String position) {
         this.name = name;
         this.team = team;
         this.year = year;
+        this.position = position;
+        
         setTeamAndYear(team,year);
     }
     
@@ -37,6 +39,11 @@ public class Player {
     
     public String getName() {
         return name;
+    }
+    
+    public void setPosition(String pos) {
+    	this.position = pos;
+    	
     }
     
     public HashMap<String,ArrayList<Integer>> getPlayerMap() {
