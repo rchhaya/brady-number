@@ -14,7 +14,13 @@ import java.util.regex.Matcher;
 
 public class PlayerParser {
 	// Parser parse = new Parser("https://www.pro-football-reference.com/players/");
-	private ArrayList<Player> playerList = new ArrayList<Player>();
+	private ArrayList<Player> playerList;
+	
+	public PlayerParser() {
+		playerList = new ArrayList<Player>();
+		playersOfA();
+		//playersOfB(), etc.
+	}
 
 	public void playersOfA() {
 		Parser parse1 = new Parser("https://www.pro-football-reference.com/players/A/");
