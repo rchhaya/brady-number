@@ -20,7 +20,7 @@ public class Player {
         this.name = name;
         this.team = team;
         this.year = year;
-        this.position = position;
+        this.setPosition(position);
         
         setTeamAndYear(team,year);
     }
@@ -49,5 +49,9 @@ public class Player {
     public HashMap<String,ArrayList<Integer>> getPlayerMap() {
         return playerMap;
     }
+
+	public String getPosition() {
+		return position;
+	}
     
 }
