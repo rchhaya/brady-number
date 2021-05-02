@@ -17,7 +17,7 @@ public class PlayerParser {
 	private ArrayList<Player> playerList;
 	
 	public PlayerParser() {
-		playerList = new ArrayList<Player>();
+		setPlayerList(new ArrayList<Player>());
 		playersOfA();
 		//playersOfB(), etc.
 	}
@@ -79,6 +79,14 @@ public class PlayerParser {
 
 		}
 
+	}
+
+	public ArrayList<Player> getPlayerList() {
+		return playerList;
+	}
+
+	public void setPlayerList(ArrayList<Player> playerList) {
+		this.playerList = playerList;
 	}
 
 }
