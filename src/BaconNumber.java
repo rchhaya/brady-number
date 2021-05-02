@@ -40,22 +40,26 @@ public class BaconNumber extends JFrame implements Runnable {
         statusBar = new JLabel("Brady Number: "); 
         
         //Frame Label
-        final JFrame frame = new JFrame("Bacon Number");
+        final JFrame frame = new JFrame("Brady Number");
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation(screenSize.width / 3, screenSize.height / 3);
         
-        JLabel intro = new JLabel("Welcome to Brady number! Click the instructions button "
-        		+ "\nif you are unfamiliar with what the input should be "
-        		+ "\n. If you are unfamilar with the names and positions of players, check "
-        		+ "out the following link: ");
+        JLabel intro1 = new JLabel("Welcome to Brady number! Click the instructions button ");
+        JLabel intro2 = new JLabel("if you are unfamiliar with what the input should be");
+        JLabel intro3 = new JLabel("If you are unfamilar with the names and positions of players, check \"\r\n"
+        		+  "out the following link:");
         JLabel introLink = new JLabel("Pro Football Focus");
+        JPanel introPanel = new JPanel();
+        introPanel.setLayout(new BoxLayout(introPanel, BoxLayout.Y_AXIS));
+      
+        
         introLink.setForeground(Color.blue.darker());
         introLink.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         introLink.addMouseListener(new MouseAdapter() {
         	@Override 
         	public void mouseClicked(MouseEvent e) {
         		try {
-        	        Desktop.getDesktop().browse(new URI("http://www.codejava.net")); 
+        	        Desktop.getDesktop().browse(new URI("https://www.pro-football-reference.com/players/")); 
         	    } catch (IOException e1) {
         	    	JOptionPane.showMessageDialog(null,
                             "Whoops! The site is down at the moment."
@@ -70,6 +74,12 @@ public class BaconNumber extends JFrame implements Runnable {
         	    }
         	}
         });
+        introPanel.add(intro1);
+        introPanel.add(intro2);
+        introPanel.add(intro3);
+        introPanel.add(introLink);
+        
+        
         //Status Panel
         JPanel statusPanel = new JPanel();
         frame.add(statusPanel, BorderLayout.SOUTH);
@@ -78,13 +88,9 @@ public class BaconNumber extends JFrame implements Runnable {
         
 
         JPanel controlPanel1 = new JPanel();
-        frame.add(controlPanel1, BorderLayout.NORTH);
         
         JPanel controlPanel2 = new JPanel();
-        frame.add(controlPanel2, BorderLayout.CENTER);
-        
-        JPanel controlPanel3 = new JPanel();
-        frame.add(controlPanel3, BorderLayout.SOUTH);
+
         
         //Reset Button
         final JButton reset = new JButton("Reset");
@@ -200,16 +206,20 @@ public class BaconNumber extends JFrame implements Runnable {
         });
         
         //Add buttons to the panels  
+        controlPanel1.setLayout(new BoxLayout(controlPanel1, BoxLayout.Y_AXIS));
+        userInput1.setText("Player 1");
+        userInput2.setText("Player 2");
         controlPanel1.add(userInput1);
-
-        controlPanel2.add(userInput2);
+        controlPanel1.add(userInput2);
+        frame.add(controlPanel1, BorderLayout.CENTER);
         
-        controlPanel3.add(enter); 
-        controlPanel3.add(reset);
-        controlPanel3.add(menu);
+       // controlPanel2.setLayout(new BoxLayout(controlPanel2, BoxLayout.Y_AXIS));
+        controlPanel2.add(enter); 
+        controlPanel2.add(reset);
+        controlPanel2.add(menu);
+        frame.add(controlPanel2, BorderLayout.SOUTH);
         
-        frame.add(introLink, BorderLayout.PAGE_START);
-        frame.add(intro, BorderLayout.CENTER);
+        frame.add(introPanel, BorderLayout.PAGE_START);
         
         
         //Make visible on frame
