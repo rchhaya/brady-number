@@ -3,14 +3,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.regex.Matcher;
+
 
 public class PlayerParser {
 	// Parser parse = new Parser("https://www.pro-football-reference.com/players/");
@@ -32,15 +25,15 @@ public class PlayerParser {
 		ArrayList<Element> playersBold = new ArrayList<Element>();
 		for (Element e : articleElements) {
 			// bold is mentioned on all pages at top we omit this it's not a player
-			if (e.text() != "bold") {
-
+			if (!(e.text().equals("bold"))) {
+				System.out.println(e.text());
 				playersBold.add(e);
 			}
 		}
 
 		String url = parse1.currentDoc.location();
 		for (Element e : playersBold) {
-			// System.out.println(e.text());
+			//System.out.println(e.text());
 			Player person = new Player(e.text());
 			Parser newParse = new Parser(url);
 			newParse.getArticles();
@@ -52,17 +45,21 @@ public class PlayerParser {
 			for (Element x : pEls) {
 				if (x.text().length() <= 2) {
 					person.setPosition(x.text());
+					System.out.println(x.text());
 					// time save@
 					break;
 				}
 			}
+			
 
 			// now we load the teams played into the player object@
 			// we will break at the yr 2020 bc 2021 has not been added to the page
+			//still need to handle cases where someone was on multiple teams in a single year
 			Elements articleElements1 = newParse.currentDoc.select("tr");
 			for (Element y : articleElements1) {
 				// child(0) = year & child(2) = team
-				if (y.child(0).text().contains("2020")) {
+				//break on career so that we dont get extra info we do not want
+				if (y.child(0).text().contains("Career")) {
 					break;
 				}
 
@@ -70,6 +67,10 @@ public class PlayerParser {
 				try {
 					int yr = Integer.parseInt(year);
 					person.setTeamAndYear(y.child(2).text(), yr);
+					
+					//add the player to the list
+					playerList.add(person);
+					
 				} catch (NumberFormatException err) {
 					System.out.println("error with parsing year to int");
 					err.printStackTrace();

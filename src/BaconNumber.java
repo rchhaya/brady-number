@@ -31,9 +31,9 @@ public class BaconNumber extends JFrame implements Runnable {
     private boolean running;
     
     public void run() {
-//    	PlayerParser parser = new PlayerParser();
-//    	ArrayList<Player> playerList = parser.getPlayerList();
-//    	AdjacencyList aList = new AdjacencyList(playerList);
+    	PlayerParser parser = new PlayerParser();
+    	ArrayList<Player> playerList = parser.getPlayerList();
+    	AdjacencyList aList = new AdjacencyList(playerList);
         
         running = true;
         

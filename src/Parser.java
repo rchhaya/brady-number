@@ -89,7 +89,7 @@ public class Parser {
 			url = "https://www.pro-football-reference.com/players/" + url;
 		}
 
-		// System.out.println(relevantURL); // check we have the right URL
+		 System.out.println(url); // check we have the right URL
 		try {
 			this.currentDoc = Jsoup.connect(url).get();
 			// System.out.println(currentDoc);
