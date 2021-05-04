@@ -86,10 +86,10 @@ public class Parser {
 
 		// quick mod here just appends the start on in case we need it
 		if (url != null && !url.contains("https:")) {
-			url = "https://www.pro-football-reference.com/players/" + url;
+			url = "https://www.pro-football-reference.com" + url;
 		}
 
-		 System.out.println(url); // check we have the right URL
+		 //System.out.println(url); // check we have the right URL
 		try {
 			this.currentDoc = Jsoup.connect(url).get();
 			// System.out.println(currentDoc);

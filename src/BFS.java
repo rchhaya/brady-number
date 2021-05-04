@@ -15,9 +15,10 @@ public class BFS {
         parent = new HashMap<Player,Player>();
     }
     
-    public ArrayList<Player> bfsTraversal(Player src, Player tgt) {
+    public ArrayList<Player> bfsTraversal() {
         
         ArrayList<Player> path = new ArrayList<Player>();
+        
         //Initialize the player HashMap for each player 
         for (Map.Entry<Player, ArrayList<Player>> entry : graph.entrySet()) {
             parent.put(entry.getKey(), null);
@@ -31,15 +32,14 @@ public class BFS {
         //Account for the src/first player
         queue.add(src);
         layer.add(src);
+        discovered.add(src);
             
         while (!queue.isEmpty()) {
             
             //For each layer 
             for (int i = 0; i < layer.size(); i++) {
                 
-                Player curr = queue.get(0);
-                
-                queue.remove(0);
+                Player curr = queue.remove(0);
                 
                 for (Player p : graph.get(curr)) {
                     if (!discovered.contains(p)) {

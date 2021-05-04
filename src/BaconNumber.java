@@ -10,7 +10,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.swing.*;
@@ -44,11 +46,12 @@ public class BaconNumber extends JFrame implements Runnable {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation(screenSize.width / 3, screenSize.height / 3);
         
-        JLabel intro1 = new JLabel("Welcome to Brady number! Click the instructions button ");
-        JLabel intro2 = new JLabel("if you are unfamiliar with what the input should be");
-        JLabel intro3 = new JLabel("If you are unfamilar with the names and positions of players, check \"\r\n"
-        		+  "out the following link:");
+        JLabel intro1 = new JLabel("Welcome to Brady number!");
+        JLabel intro2 = new JLabel("Click the instructions button if you are unfamiliar with what the input should be");
+        JLabel intro3 = new JLabel("If you are unfamilar with the names and positions of players, check \n"
+        		+  "out the following link:\n");
         JLabel introLink = new JLabel("Pro Football Focus");
+        JLabel introWhitespace = new JLabel(" ");
         JPanel introPanel = new JPanel();
         introPanel.setLayout(new BoxLayout(introPanel, BoxLayout.Y_AXIS));
       
@@ -78,6 +81,7 @@ public class BaconNumber extends JFrame implements Runnable {
         introPanel.add(intro2);
         introPanel.add(intro3);
         introPanel.add(introLink);
+        introPanel.add(introWhitespace);
         
         
         //Status Panel
@@ -158,18 +162,23 @@ public class BaconNumber extends JFrame implements Runnable {
             	Player player2 = new Player("");
             	boolean assigned1 = false;
             	boolean assigned2 = false;
-//            	for (Player p : playerList){
-//            	  if (p.getName().equals(name1) && p.getPosition().equals(position1) && !assigned1){
-//            	  	player1 = p;
-//            	  	assigned1 = true;
-//            	   	continue;
-//            	  }     
-//            	  if (p.getName().equals(name2) && p.getPosition().equals(position2) && !assigned2){
-//            		  player2 = p;
-//            		  assigned2 = true;
-//            		  continue;
-//            	  }       	 
-//            	 }
+            	//Remove duplicates
+            	Set<Player> playerSet = new HashSet<Player>(playerList);
+            	for (Player p : playerSet){
+            		System.out.println(p.getName() + ":" + p.getPosition());
+            	  if (p.getName().equals(name1) && p.getPosition().equals(position1) && !assigned1){
+            	  	player1 = p;
+            	  	assigned1 = true;
+            	  	System.out.println("here1");
+            	   	continue;
+            	  }     
+            	  if (p.getName().equals(name2) && p.getPosition().equals(position2) && !assigned2){
+            		  player2 = p;
+            		  assigned2 = true;
+            		  System.out.println("here2");
+            		  continue;
+            	  }       	 
+            	 }
             	if (player1.getName().equals("") || player2.getName().equals("")) {
             		JOptionPane.showMessageDialog(null,
                             "You entered an invalid input.\n"
@@ -181,25 +190,25 @@ public class BaconNumber extends JFrame implements Runnable {
             		
             		
             	} else {
-//            		BFS searcher = new BFS(aList.getAdjList(), player1, player2);
-//            		ArrayList<Player> bfsOutput = searcher.bfsTraversal(player1, player2);
-//            		int bradyNumber = bfsOutput.size();
-//            		String distance = "";
-//            		for (int i = 0; i < bfsOutput.size(); i++) {
-//            			if (i != bfsOutput.size()-1) {
-//            				String adder = bfsOutput.get(i).getName() + " -> ";
-//            				distance += adder;
-//            			} else {
-//            				String adder = bfsOutput.get(i).getName();
-//            				distance += adder;
-//            			}
-//            		}
-//            		JOptionPane.showMessageDialog(null,
-//                            "The Brady number between " + player1.getName() + " and " + player2.getName() + 
-//                            " is " + bradyNumber + "!\n"
-//                            + "Here is the path between the players: \n"
-//                            + distance + "Return back to home to find a different Brady number!",
-//                            "Brady Number", JOptionPane.INFORMATION_MESSAGE);
+            		BFS searcher = new BFS(aList.getAdjList(), player1, player2);
+            		ArrayList<Player> bfsOutput = searcher.bfsTraversal();
+            		int bradyNumber = bfsOutput.size();
+            		String distance = "";
+            		for (int i = 0; i < bfsOutput.size(); i++) {
+            			if (i != bfsOutput.size()-1) {
+            				String adder = bfsOutput.get(i).getName() + " -> ";
+            				distance += adder;
+            			} else {
+            				String adder = bfsOutput.get(i).getName();
+            				distance += adder;
+            			}
+            		}
+            		JOptionPane.showMessageDialog(null,
+                            "The Brady number between " + player1.getName() + " and " + player2.getName() + 
+                            " is " + bradyNumber + "!\n"
+                            + "Here is the path between the players: \n"
+                            + distance + "Return back to home to find a different Brady number!",
+                            "Brady Number", JOptionPane.INFORMATION_MESSAGE);
             	}
             }
             }

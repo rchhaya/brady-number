@@ -22,53 +22,57 @@ public class AdjacencyList  {
     }
     
     public void construct() {
-        int cnt = 0;
-        for (Map.Entry<Player, ArrayList<Player>> entry : adjList.entrySet()) {
-            if (cnt == 0) {
-                entry.getKey().setTeamAndYear("1", 2000);
-                entry.getKey().setTeamAndYear("2", 2001);
-            }
-            if (cnt == 1) {
-                entry.getKey().setTeamAndYear("2", 2001);
-                entry.getKey().setTeamAndYear("3", 2002);
-            }
-            cnt++;
-        }
         
         for (Map.Entry<Player, ArrayList<Player>> entry : adjList.entrySet()) {
+            
+            //Current player
             Player curr = entry.getKey();
             
-            System.out.println("curr player: " + curr.getName());
+            //Access the current player's player map (team key, list of years value)
             HashMap<String,ArrayList<Integer>> currPlayerMap = curr.getPlayerMap();
-            System.out.println("currplayermap: " + currPlayerMap);
+            
+            //Iterate through each of the players that is not the current player 
             for (Map.Entry<Player, ArrayList<Player>> f : adjList.entrySet()) {
+                
                 if (!f.getKey().equals(curr)) {
+                    
+                    //Neighbor player
                     Player neighbor = f.getKey();
-                    System.out.println("neighbor player: " + neighbor.getName());
+                    
+                    //Access the neighbor player map
                     HashMap<String,ArrayList<Integer>> neighborPlayerMap = neighbor.getPlayerMap();
                     
+                    //Iterate through the entries of the current player map
                     for (Map.Entry<String, ArrayList<Integer>> e : currPlayerMap.entrySet()) {
+                        
+                        //Current team
                         String team = e.getKey();
-                        System.out.println("team: " + team);
+                        
+                        //List of years for the current team
                         ArrayList<Integer> years = e.getValue();
+                        
+                        //Iterate through the years of the current team
                         for (int year : years) {
                             
-                            System.out.println("current year: " + year);
+                            //Check if the neighbor player played for the same team
                             if (neighborPlayerMap.get(team) != null) {
-                                System.out.println("it exists");
+                                
+                                //If the neighbor played on the current team, check if 
+                                //played the current year
                                 if (neighborPlayerMap.get(team).contains(year)) {
+                                    
+                                    //Add the neighbor the current 
                                     if (!adjList.get(curr).contains(neighbor)) {
-                                        System.out.println("entered first");
                                         adjList.get(curr).add(neighbor);
                                     }
+                                    
+                                    //Add the current to the neighbor
                                     if (!adjList.get(neighbor).contains(curr)) {
-                                        System.out.println("entered second");
                                         adjList.get(neighbor).add(curr);
                                     }
                                 }
                             }
                         }
-                        System.out.println("-------------");
                     }
                 }
             }
