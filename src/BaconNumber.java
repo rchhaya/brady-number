@@ -121,8 +121,8 @@ public class BaconNumber extends JFrame implements Runnable {
                         "Enter 2 current NFL players in the spaces provided.\n"
                         + "Please enter their full first and last name (no middle"
                         + " name or suffixes) with title-case capitalization \n"
-                        + " as well as their 1- or 2-letter position abbreviation \n(ex. Tom"
-                        + " Brady QB, Rodney Harrison S)",
+                        + " as well as their 1-, 2-, 3-, or 4-letter position abbreviation \n(ex. Tom"
+                        + " Brady (QB), Rodney Harrison (S), Josh Allen (EDGE))",
                         "Instructions", JOptionPane.INFORMATION_MESSAGE);
             }
         });
@@ -137,23 +137,39 @@ public class BaconNumber extends JFrame implements Runnable {
             	//Check to make sure strings are long enough
             	if (userInput1.getText().length() < 2 || userInput2.getText().length() < 2) {
             		JOptionPane.showMessageDialog(null,
-                            "You entered an invalid input.\n"
+                            "SYou entered an invalid input.\n"
                             + "Please re-enter with following the syntax rules: \n"
                             + "1. Full first + last name in titlecase, no middle name nor suffixes)\n"
-                            + "2. 1- or 2-letter position abbreviation (ex. S, WR, QB, RB) \n(ex. Tom"
-                            + " Brady QB, Ezekiel Elliot RB)",
+                            + "2. If 2 players have the same name, 1-,2-, 3-letter position abbreviation (ex. S, WR, QB, RB) \n(ex. Tom"
+                            + " Brady (QB), Ezekiel Elliot (RB))",
                             "Invalid input!", JOptionPane.INFORMATION_MESSAGE);
             	} else {
             	String entry1 = userInput1.getText();
-            	String name1 = entry1.substring(0, entry1.length()-2);
-            	String position1 = entry1.substring(entry1.length()-2, entry1.length());
-            	
+            	String name1 = new String();
+            	String position1 = new String();
+            	if (entry1.contains("(")) {
+            		//Contains position
+            		name1 = entry1.substring(0, entry1.indexOf("(")).trim();
+            		position1 = entry1.substring(entry1.indexOf("(")+1, entry1.length()-1).trim();
+            	} else {
+            		name1 = entry1.trim();
+            		position1 = "";
+            	}
+                    	
             	System.out.println(name1);
             	System.out.println(position1);
             	
             	String entry2 = userInput2.getText();
-            	String name2 = entry2.substring(0, entry2.length()-2);
-            	String position2 = entry2.substring(entry2.length()-2, entry2.length());
+            	String name2 = new String();
+            	String position2 = new String();
+            	if (entry2.contains("(")) {
+            		//Contains position
+            		name2 = entry2.substring(0, entry2.indexOf("(")).trim();
+            		position2 = entry2.substring(entry2.indexOf("(") + 1, entry2.length()-1).trim();
+            	} else {
+            		name2 = entry2.trim();
+            		position2 = "";
+            	}
             	
             	System.out.println(name2);
             	System.out.println(position2);
@@ -166,13 +182,13 @@ public class BaconNumber extends JFrame implements Runnable {
             	Set<Player> playerSet = new HashSet<Player>(playerList);
             	for (Player p : playerSet){
             		System.out.println(p.getName() + ":" + p.getPosition());
-            	  if (p.getName().equals(name1) && p.getPosition().equals(position1) && !assigned1){
+            	  if (p.getName().equals(name1) && (p.getPosition().equals(position1) || position1.equals("")) && !assigned1){
             	  	player1 = p;
             	  	assigned1 = true;
             	  	System.out.println("here1");
             	   	continue;
             	  }     
-            	  if (p.getName().equals(name2) && p.getPosition().equals(position2) && !assigned2){
+            	  if (p.getName().equals(name2) && (p.getPosition().equals(position2) || position2.equals("")) && !assigned2){
             		  player2 = p;
             		  assigned2 = true;
             		  System.out.println("here2");
@@ -192,7 +208,7 @@ public class BaconNumber extends JFrame implements Runnable {
             	} else {
             		BFS searcher = new BFS(aList.getAdjList(), player1, player2);
             		ArrayList<Player> bfsOutput = searcher.bfsTraversal();
-            		int bradyNumber = bfsOutput.size();
+            		int bradyNumber = bfsOutput.size() - 1;
             		String distance = "";
             		for (int i = 0; i < bfsOutput.size(); i++) {
             			if (i != bfsOutput.size()-1) {
@@ -207,7 +223,7 @@ public class BaconNumber extends JFrame implements Runnable {
                             "The Brady number between " + player1.getName() + " and " + player2.getName() + 
                             " is " + bradyNumber + "!\n"
                             + "Here is the path between the players: \n"
-                            + distance + "Return back to home to find a different Brady number!",
+                            + distance + " \nReturn back to home to find a different Brady number!",
                             "Brady Number", JOptionPane.INFORMATION_MESSAGE);
             	}
             }
