@@ -16,6 +16,9 @@ public class PlayerParser {
 		for (int i = 0; i < alphabet.length(); i++) {
 			playersOfChar(Character.toString(alphabet.charAt(i)));
 			load += "|";
+			if (i == alphabet.length()-1) {
+				load += "] :)";
+			}
 			System.out.println(load);
 			
 		}

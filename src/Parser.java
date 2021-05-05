@@ -1,10 +1,4 @@
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Scanner;
-
 //These methods are from lecture in order to print out the HTML contents of a page
 
 import org.jsoup.Jsoup;
