@@ -27,7 +27,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 
 @SuppressWarnings({ "serial", "unused" })
-public class BaconNumber extends JFrame implements Runnable {
+public class BradyNumber extends JFrame implements Runnable {
     
     private JLabel statusBar = new JLabel();
     static String username = "";
@@ -357,7 +357,7 @@ public class BaconNumber extends JFrame implements Runnable {
     }
     
     public static void main(String[] args) {
-        BaconNumber b = new BaconNumber();
+        BradyNumber b = new BradyNumber();
         //b.setLocationRelativeTo(null);
         b.setVisible(true);
         SwingUtilities.invokeLater(new BaconNumber());
