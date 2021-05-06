@@ -357,10 +357,10 @@ public class BradyNumber extends JFrame implements Runnable {
     }
     
     public static void main(String[] args) {
-        BradyNumber b = new BradyNumber();
+        //BradyNumber b = new BradyNumber();
         //b.setLocationRelativeTo(null);
-        b.setVisible(true);
-        SwingUtilities.invokeLater(new BaconNumber());
+        //b.setVisible(true);
+        SwingUtilities.invokeLater(new BradyNumber());
     }
 }
 
