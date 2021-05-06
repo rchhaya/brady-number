@@ -1,5 +1,7 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,23 +15,24 @@ public class PlayerParser {
 		setPlayerList(new ArrayList<Player>());
 		String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		String load = "Loading status: [ ";
+		System.out.println(load);
 		for (int i = 0; i < alphabet.length(); i++) {
 			playersOfChar(Character.toString(alphabet.charAt(i)));
 			load += "|";
-			if (i == alphabet.length()-1) {
+			if (i == alphabet.length() - 1) {
 				load += "] :)";
 			}
 			System.out.println(load);
-			
+
 		}
-		
+
 		// playersOfB(), etc.
 	}
 
 	public void playersOfChar(String currentLetter) {
-		Parser parse1 = new Parser("https://www.pro-football-reference.com/players/" + currentLetter + "/" );
+		Parser parse1 = new Parser("https://www.pro-football-reference.com/players/" + currentLetter + "/");
 		// parse1.getArticlePage("Ken Anderson");
-		
+
 		// we are handling current players
 		// these are bolded so we select on element - "b"
 		Elements articleElements = parse1.currentDoc.select("b");
@@ -52,10 +55,8 @@ public class PlayerParser {
 		String url = parse1.currentDoc.location();
 		// System.out.println(url);
 		for (String e : playersBold) {
-			//System.out.println(e);
-			
-			
-			
+			// System.out.println(e);
+
 			// set name
 			Player person = new Player(e);
 			// reset base doc to the letter's page
@@ -84,12 +85,12 @@ public class PlayerParser {
 					String justPos = position.substring(spacePos + 1, position.length());
 					if (justPos.length() >= 1 && justPos.length() <= 4 && justPos.matches("[a-zA-Z]+")) {
 						person.setPosition(justPos);
-						//System.out.println(justPos);
+						// System.out.println(justPos);
 					}
 
 				} else {
 					person.setPosition("NA");
-					//System.out.println("NA");
+					// System.out.println("NA");
 
 				}
 			} catch (IllegalArgumentException error) {
@@ -109,31 +110,90 @@ public class PlayerParser {
 				if (articleElements1.get(i).text().contains("Year")) {
 					continue;
 				}
+				
+				
 				// child(0) = year & child(2) = team
 				// break on career so that we dont get extra info we do not want
 				if (articleElements1.get(i).child(0).text().contains("Career")) {
 					break;
 				}
+				//break if we're past career
+				if (articleElements1.get(i).child(0).text().contains("yr")) {
+					break;
+				}
 
 				String year = articleElements1.get(i).child(0).text();
+				int errorCounter = 0;
 				try {
 					if (year.length() >= 4) {
 						String mod = year.substring(0, 4);
-						//System.out.println(mod);
-						//System.out.println(articleElements1.get(i).child(2).text());
+						// System.out.println(mod);
+						// System.out.println(articleElements1.get(i).child(2).text());
 						int yr = Integer.parseInt(mod);
 						person.setTeamAndYear(articleElements1.get(i).child(2).text(), yr);
+					} else if (year.length() == 0) {
+						// System.out.println("zer otest ");
+
+						try {
+//							if (articleElements1.get(i+2).child(0).text().contains("Career")) {
+//								break;
+//							}
+							// do try cause this wont work if this is at the first year
+							if (i > 0) {
+								String yearRetained = articleElements1.get(i - 1).child(0).text();
+								String modded = yearRetained.substring(0, 4);
+								int yearInt = Integer.parseInt(modded);
+								
+								person.setTeamAndYear(articleElements1.get(i).child(2).text(), yearInt);
+								person.setTeamAndYear(articleElements1.get(i+1).child(2).text(), yearInt);
+								
+								//now lets delete the 2TM entry
+								HashMap<String,ArrayList<Integer>> checker = new HashMap<String, ArrayList<Integer>>();
+								checker = person.getPlayerMap();
+								try {
+									
+									checker.remove("2TM");
+									
+								}catch (IllegalArgumentException excep) {
+									
+								}
+								System.out.println(year);
+								
+
+								
+								//had an error previously when 2TM was at the end of the table.
+//								if (yearRetained.contains("2020")) {
+//									//System.out.println("breaking!!");
+//									break;
+//								}
+								
+								i = i + 2;
+								
+								//now skip 2 so we dont get repeats and we move onto the next category
+								
+								
+							}
+						} catch (NumberFormatException exp) {
+
+						}
 					}
 
 				} catch (NumberFormatException err) {
-					System.out.println("error with parsing year to int");
+					errorCounter++;
+//					System.out.println("-------------");
+					System.out.println("error with parsing year to int:" + errorCounter);
+					System.out.println(person.getName());
+//					System.out.println(year);
+//					System.out.println("-------------");
+
+					
 					// err.printStackTrace();
 				}
 
 			}
 			// add the player to the list
-			//still some glitches with certain -players
-			if(person.getPosition() == null) {
+			// still some glitches with certain -players
+			if (person.getPosition() == null) {
 				person.setPosition("NA");
 //				System.out.println(person.getName());
 //				System.out.println(person.getPosition());
@@ -141,7 +201,8 @@ public class PlayerParser {
 			playerList.add(person);
 
 		}
-
+//			Player ab = playerList.get(0);
+//			ab.getTeams();
 	}
 
 	public ArrayList<Player> getPlayerList() {
@@ -151,7 +212,5 @@ public class PlayerParser {
 	public void setPlayerList(ArrayList<Player> playerList) {
 		this.playerList = playerList;
 	}
-	
-	
 
 }

@@ -1,5 +1,9 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
+import javax.lang.model.element.Element;
 
 public class Player {
 
@@ -43,6 +47,15 @@ public class Player {
 
 	public String getPosition() {
 		return position;
+	}
+	
+	public void getTeams(){
+		
+		Set key = playerMap.keySet();
+		for(Object s : key ) {
+			System.out.println(s.toString());
+		}
+		
 	}
     
 }

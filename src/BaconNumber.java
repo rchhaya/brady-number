@@ -43,15 +43,36 @@ public class BaconNumber extends JFrame implements Runnable {
         
         //Frame Label
         final JFrame frame = new JFrame("Brady Number");
+        String asciiArt = new String(""
+        		+ "        _.-=\"\"=-._ \r\n"
+        		+ "      .'\\\\-++++-//'.\r\n"
+        		+ "     (  ||      ||  )\r\n"
+        		+ "      './/      \\\\.'\r\n"
+        		+ "        `'-=..=-'`");
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation(screenSize.width / 3, screenSize.height / 3);
         
-        JLabel intro1 = new JLabel("Welcome to Brady number!");
-        JLabel intro2 = new JLabel("Click the instructions button if you are unfamiliar with what the input should be");
-        JLabel intro3 = new JLabel("If you are unfamilar with the names and positions of players, check \n"
-        		+  "out the following link:\n");
-        JLabel introLink = new JLabel("Pro Football Focus");
-        JLabel introWhitespace = new JLabel(" ");
+//        JLabel ascii1 = new JLabel("        _.-=\\\"\\\"=-._");
+//        JLabel ascii2 = new JLabel("      .'\\\\\\\\-++++-//'.");
+//        JLabel ascii3 = new JLabel("     (_    ||        ||    _)");
+//        JLabel ascii4 = new JLabel("      './/      \\\\\\\\.'");
+//        JLabel ascii5 = new JLabel("        -.-=\\\"\\\"=-.-");
+        
+        
+        JLabel intro1 = new JLabel("  Welcome to Brady number!");
+        JLabel introWhitespace1 = new JLabel("");
+        JLabel intro2 = new JLabel("  Please click the instructions button if you are unfamiliar with the input format  ");
+        JLabel intro3 = new JLabel("  If you are unfamilar with the names and positions of players, check "
+        		+  "out the following link:  ");
+        JLabel introLink = new JLabel("  Pro Football Focus");
+        JLabel introWhitespace2 = new JLabel(" ");
+        JLabel introWhitespace3 = new JLabel(" ");
+        JLabel intro4 = new JLabel("  Please enter the legal first and last name of any 2 active NFL players (title-case capitalization)  ");
+        JLabel intro6 = new JLabel("  We can calculate the degrees of seperation between the players!  ");
+        JLabel intro7 = new JLabel("  (1 degree of seperation = playing on the same team at the same time)  ");
+        JLabel introWhitespace4 = new JLabel(" ");
+        
+        
         JPanel introPanel = new JPanel();
         introPanel.setLayout(new BoxLayout(introPanel, BoxLayout.Y_AXIS));
       
@@ -78,16 +99,30 @@ public class BaconNumber extends JFrame implements Runnable {
         	}
         });
         introPanel.add(intro1);
+//        introPanel.add(ascii1);
+//        //introPanel.add(ascii2);
+//        introPanel.add(ascii3);
+//        //introPanel.add(ascii4);
+//        introPanel.add(ascii5);
+
+        introPanel.add(introWhitespace1);
         introPanel.add(intro2);
         introPanel.add(intro3);
         introPanel.add(introLink);
-        introPanel.add(introWhitespace);
+        introPanel.add(introWhitespace2);
+        introPanel.add(introWhitespace3);
+        introPanel.add(intro4);
+        //introPanel.add(intro5);
+        introPanel.add(intro6);
+        introPanel.add(intro7);
+        introPanel.add(introWhitespace4);
+        
         
         
         //Status Panel
         JPanel statusPanel = new JPanel();
         frame.add(statusPanel, BorderLayout.SOUTH);
-        statusBar = new JLabel("Bacon Number: ");
+        statusBar = new JLabel("Brady Number: ");
         statusPanel.add(statusBar);
         
 
@@ -119,10 +154,12 @@ public class BaconNumber extends JFrame implements Runnable {
             public void actionPerformed(ActionEvent e3) {
                 JOptionPane.showMessageDialog(null,
                         "Enter 2 current NFL players in the spaces provided.\n"
-                        + "Please enter their full first and last name (no middle"
-                        + " name or suffixes) with title-case capitalization \n"
-                        + " as well as their 1-, 2-, 3-, or 4-letter position abbreviation \n(ex. Tom"
-                        + " Brady (QB), Rodney Harrison (S), Josh Allen (EDGE))",
+                        + "Please enter their full legal first and last name (no nicknames) with title-case capitalization. \n"
+                        + "This typically is first and last name, but can include suffixes\n"
+                        + "\n"
+                        + "Examples of valid inputs withouts suffixes: Tom Brady, Dak Prescott, Jalen Hurts, Ezekiel Elliot, Josh Allen."
+                        + "\nExamples of valid inputs with suffixes: Odell Beckham Jr., Robert Griffen III"
+                        + "\nExamples of invalid inputs: Zeke, Thomas Brady, AB (Antonio Brown), Captain Kirk",
                         "Instructions", JOptionPane.INFORMATION_MESSAGE);
             }
         });
@@ -137,7 +174,7 @@ public class BaconNumber extends JFrame implements Runnable {
             	//Check to make sure strings are long enough
             	if (userInput1.getText().length() < 2 || userInput2.getText().length() < 2) {
             		JOptionPane.showMessageDialog(null,
-                            "SYou entered an invalid input.\n"
+                            "You entered an invalid input.\n"
                             + "Please re-enter with following the syntax rules: \n"
                             + "1. Full first + last name in titlecase, no middle name nor suffixes)\n"
                             + "2. If 2 players have the same name, 1-,2-, 3-letter position abbreviation (ex. S, WR, QB, RB) \n(ex. Tom"
@@ -181,7 +218,7 @@ public class BaconNumber extends JFrame implements Runnable {
             	//Remove duplicates
             	Set<Player> playerSet = new HashSet<Player>(playerList);
             	for (Player p : playerSet){
-            		System.out.println(p.getName() + ":" + p.getPosition());
+            		//System.out.println(p.getName() + ":" + p.getPosition());
             	  if (p.getName().equals(name1) && (p.getPosition().equals(position1) || position1.equals("")) && !assigned1){
             	  	player1 = p;
             	  	assigned1 = true;
@@ -232,10 +269,20 @@ public class BaconNumber extends JFrame implements Runnable {
         
         //Add buttons to the panels  
         controlPanel1.setLayout(new BoxLayout(controlPanel1, BoxLayout.Y_AXIS));
-        userInput1.setText("Player 1");
-        userInput2.setText("Player 2");
-        controlPanel1.add(userInput1);
-        controlPanel1.add(userInput2);
+        JLabel player1Text = new JLabel("Player 1: ");
+        userInput1.setText("");
+        JPanel entry1 = new JPanel();
+        entry1.add(player1Text);
+        entry1.add(userInput1);
+        
+        JLabel player2Text = new JLabel("Player 2: ");
+        userInput2.setText("");
+        JPanel entry2 = new JPanel();
+        entry2.add(player2Text);
+        entry2.add(userInput2);
+        
+        controlPanel1.add(entry1);
+        controlPanel1.add(entry2);
         frame.add(controlPanel1, BorderLayout.CENTER);
         
        // controlPanel2.setLayout(new BoxLayout(controlPanel2, BoxLayout.Y_AXIS));
@@ -251,7 +298,7 @@ public class BaconNumber extends JFrame implements Runnable {
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-       // frame.setSize(500,100);
+        //frame.setSize(500,100);
         
         
     }
