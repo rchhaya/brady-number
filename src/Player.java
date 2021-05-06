@@ -53,7 +53,7 @@ public class Player {
 		
 		Set key = playerMap.keySet();
 		for(Object s : key ) {
-			System.out.println(s.toString());
+			//System.out.println(s.toString());
 		}
 		
 	}

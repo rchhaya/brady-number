@@ -10,10 +10,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
@@ -43,12 +46,12 @@ public class BaconNumber extends JFrame implements Runnable {
         
         //Frame Label
         final JFrame frame = new JFrame("Brady Number");
-        String asciiArt = new String(""
-        		+ "        _.-=\"\"=-._ \r\n"
-        		+ "      .'\\\\-++++-//'.\r\n"
-        		+ "     (  ||      ||  )\r\n"
-        		+ "      './/      \\\\.'\r\n"
-        		+ "        `'-=..=-'`");
+        //String asciiArt = new String(""
+//        		+ "        _.-=\"\"=-._ \r\n"
+//        		+ "      .'\\\\-++++-//'.\r\n"
+//        		+ "     (  ||      ||  )\r\n"
+//        		+ "      './/      \\\\.'\r\n"
+//        		+ "        `'-=..=-'`");
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation(screenSize.width / 3, screenSize.height / 3);
         
@@ -68,9 +71,12 @@ public class BaconNumber extends JFrame implements Runnable {
         JLabel introWhitespace2 = new JLabel(" ");
         JLabel introWhitespace3 = new JLabel(" ");
         JLabel intro4 = new JLabel("  Please enter the legal first and last name of any 2 active NFL players (title-case capitalization)  ");
-        JLabel intro6 = new JLabel("  We can calculate the degrees of seperation between the players!  ");
-        JLabel intro7 = new JLabel("  (1 degree of seperation = playing on the same team at the same time)  ");
+        JLabel intro5 = new JLabel("  Optionally, enter their position abbreviation at the end in parentheses (ex. (DB), (RB))"  );
+        JLabel intro6 = new JLabel("  This is required if your input shares a name with another player (ex. Josh Allen (QB), Josh Allen (EDGE))  ");
         JLabel introWhitespace4 = new JLabel(" ");
+        JLabel intro7 = new JLabel("  We can calculate the degrees of seperation between the players!  ");
+        JLabel intro8 = new JLabel("  (1 degree of seperation = playing on the same team at the same time)  ");
+        JLabel introWhitespace5 = new JLabel(" ");
         
         
         JPanel introPanel = new JPanel();
@@ -112,10 +118,12 @@ public class BaconNumber extends JFrame implements Runnable {
         introPanel.add(introWhitespace2);
         introPanel.add(introWhitespace3);
         introPanel.add(intro4);
-        //introPanel.add(intro5);
+        introPanel.add(intro5);
         introPanel.add(intro6);
-        introPanel.add(intro7);
         introPanel.add(introWhitespace4);
+        introPanel.add(intro7);
+        introPanel.add(intro8);
+        introPanel.add(introWhitespace5);
         
         
         
@@ -153,12 +161,15 @@ public class BaconNumber extends JFrame implements Runnable {
         menu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e3) {
                 JOptionPane.showMessageDialog(null,
-                        "Enter 2 current NFL players in the spaces provided.\n"
-                        + "Please enter their full legal first and last name (no nicknames) with title-case capitalization. \n"
-                        + "This typically is first and last name, but can include suffixes\n"
-                        + "\n"
+                        "Enter 2 current (active) NFL players in the spaces provided.\n"
+                        + "Please enter their full first and last name (no nicknames) with title-case capitalization. \n"
+                        + "This typically is first and last name, but can include suffixes. Check Pro Football Focus to clarify name and position. \n"
+                        + "\nIf the inputted player shares a name with another player, input their 1-, 2-, 3-, or 4-letter position abbreviation."
+                        + "\nPlease do so in parentheses at the end of the name, like Josh Allen (QB)."
+                        + "\nThe position input is optional for other players and the program will function with and without this information.\n\n"
                         + "Examples of valid inputs withouts suffixes: Tom Brady, Dak Prescott, Jalen Hurts, Ezekiel Elliot, Josh Allen."
                         + "\nExamples of valid inputs with suffixes: Odell Beckham Jr., Robert Griffen III"
+                        + "\nExamples of valid inputs with same names: Josh Allen (QB), Josh Allen (EDGE), Lamar Jackson (QB), Lamar Jackson (DB) "
                         + "\nExamples of invalid inputs: Zeke, Thomas Brady, AB (Antonio Brown), Captain Kirk",
                         "Instructions", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -175,10 +186,8 @@ public class BaconNumber extends JFrame implements Runnable {
             	if (userInput1.getText().length() < 2 || userInput2.getText().length() < 2) {
             		JOptionPane.showMessageDialog(null,
                             "You entered an invalid input.\n"
-                            + "Please re-enter with following the syntax rules: \n"
-                            + "1. Full first + last name in titlecase, no middle name nor suffixes)\n"
-                            + "2. If 2 players have the same name, 1-,2-, 3-letter position abbreviation (ex. S, WR, QB, RB) \n(ex. Tom"
-                            + " Brady (QB), Ezekiel Elliot (RB))",
+                            + "Please re-enter and follow the syntax rules specified in the directions tab."
+                            + "\nCheck out Pro Football Focus to ensure you are inputting a correctly-spelled active player",
                             "Invalid input!", JOptionPane.INFORMATION_MESSAGE);
             	} else {
             	String entry1 = userInput1.getText();
@@ -193,8 +202,8 @@ public class BaconNumber extends JFrame implements Runnable {
             		position1 = "";
             	}
                     	
-            	System.out.println(name1);
-            	System.out.println(position1);
+//            	System.out.println(name1);
+//            	System.out.println(position1);
             	
             	String entry2 = userInput2.getText();
             	String name2 = new String();
@@ -208,8 +217,8 @@ public class BaconNumber extends JFrame implements Runnable {
             		position2 = "";
             	}
             	
-            	System.out.println(name2);
-            	System.out.println(position2);
+//            	System.out.println(name2);
+//            	System.out.println(position2);
             	
             	Player player1 = new Player("");
             	Player player2 = new Player("");
@@ -217,31 +226,71 @@ public class BaconNumber extends JFrame implements Runnable {
             	boolean assigned2 = false;
             	//Remove duplicates
             	Set<Player> playerSet = new HashSet<Player>(playerList);
+            	//Keep track of the count for each player in case of duplicates
+            	HashMap<String,Integer> playerCount = new HashMap<String,Integer>();
+            	for (Player p : playerSet) {
+            	    if (playerCount.get(p.getName()) == null) {
+            	        playerCount.put(p.getName(), 1);
+            	    } else {
+            	        playerCount.put(p.getName(), playerCount.get(p.getName()) + 1);
+            	    }
+            	    
+            	}
+            	//Keep track of whether or not input player has duplicate name
+            	boolean duplicateName = false;
+            	
+            	//Pattern matcher to check if input does not of the form "Name (Position)"
+            	// If the name of the player is a duplicate
+            	Pattern pa = Pattern.compile(".*\\((.*)\\)");
+            	Matcher m;
+            	
             	for (Player p : playerSet){
             		//System.out.println(p.getName() + ":" + p.getPosition());
+            		
             	  if (p.getName().equals(name1) && (p.getPosition().equals(position1) || position1.equals("")) && !assigned1){
-            	  	player1 = p;
-            	  	assigned1 = true;
-            	  	System.out.println("here1");
-            	   	continue;
+            	  	  if (playerCount.get(p.getName()) > 1) {
+            	  	      m = pa.matcher(entry1);
+            	  	      if (!m.find()) {
+            	  	        duplicateName = true;
+                            continue;
+            	  	      }
+            	  	  }
+            	      player1 = p;
+                      assigned1 = true;
+                      //System.out.println("here1");
+                      continue;
             	  }     
             	  if (p.getName().equals(name2) && (p.getPosition().equals(position2) || position2.equals("")) && !assigned2){
-            		  player2 = p;
-            		  assigned2 = true;
-            		  System.out.println("here2");
-            		  continue;
-            	  }       	 
+            		  if (playerCount.get(p.getName()) > 1) {
+            		      m = pa.matcher(entry2);
+            		      if (!m.find()) {
+            		          duplicateName = true;
+                              continue;
+            		      }
+            		  }
+            	      player2 = p;
+                      assigned2 = true;
+                      //System.out.println("here2");
+                      continue;
+            	  }   
+            	 
             	 }
-            	if (player1.getName().equals("") || player2.getName().equals("")) {
+            	
+            	if (duplicateName) {
+            	    JOptionPane.showMessageDialog(null,
+                            "You entered a player who shares a name with at least 1 other another active player.\n"
+                            + "Please re-enter and follow the syntax rules specified in the directions tab. \n"
+                            + "\nIn this case, you must enter their 1-, 2-, 3-, or 4-letter position abbreviation to specify the player.\n"
+                            + "Please do so by placing the position in parentheses at the end of their name. \n"
+                            + "While this is optional in other players, it must be specified in cases of shared names.\n"
+                            + "\nExamples with position: Josh Allen (QB), Josh Allen (EDGE), Josh Jones (S), Josh Jones (OL)\n",
+                            "Invalid input!", JOptionPane.INFORMATION_MESSAGE);
+            	} else if (player1.getName().equals("") || player2.getName().equals("")) {
             		JOptionPane.showMessageDialog(null,
                             "You entered an invalid input.\n"
-                            + "Please re-enter with following the syntax rules: \n"
-                            + "1. Full first + last name in titlecase, no middle name nor suffixes)\n"
-                            + "2. 1- or 2-letter position abbreviation (ex. S, WR, QB, RB) \n(ex. Tom"
-                            + " Brady QB, Ezekiel Elliot RB)",
+                            + "Please re-enter and follow the syntax rules specified in the directions tab."
+                            + "\nCheck out Pro Football Focus to ensure you are inputting a correctly-spelled active player",
                             "Invalid input!", JOptionPane.INFORMATION_MESSAGE);
-            		
-            		
             	} else {
             		BFS searcher = new BFS(aList.getAdjList(), player1, player2);
             		ArrayList<Player> bfsOutput = searcher.bfsTraversal();

@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,6 +68,8 @@ public class Parser {
 
 	}
 
+	//Links that are already visited
+	private ArrayList<String> visited = new ArrayList<String>();
 	/*
 	 * Gets the document for a URL on our currentDoc
 	 * 
@@ -76,8 +79,9 @@ public class Parser {
 	 * @return the document for the articleTitle input
 	 */
 	public String getArticlePage(String articleTitle) {
-		String url = this.articleMap.get(articleTitle);
-
+	    String url = articleTitle;
+		//String url = this.articleMap.get(articleTitle);
+	    //System.out.println(url);
 		// quick mod here just appends the start on in case we need it
 		if (url != null && !url.contains("https:")) {
 			url = "https://www.pro-football-reference.com" + url;

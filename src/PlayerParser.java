@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,7 +16,7 @@ public class PlayerParser {
 	public PlayerParser() {
 		setPlayerList(new ArrayList<Player>());
 		String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		String load = "Loading status: [ ";
+		String load = "Loading status: [";
 		System.out.println(load);
 		for (int i = 0; i < alphabet.length(); i++) {
 			playersOfChar(Character.toString(alphabet.charAt(i)));
@@ -22,7 +24,7 @@ public class PlayerParser {
 			if (i == alphabet.length() - 1) {
 				load += "] :)";
 			}
-			System.out.println(load);
+			System.out.println(load); 
 
 		}
 
@@ -30,14 +32,37 @@ public class PlayerParser {
 	}
 
 	public void playersOfChar(String currentLetter) {
+	    //HashMap that maps a player name key to the links to player pages with that particular name
+	    HashMap<String,ArrayList<String>> playerToLink = new HashMap<String,ArrayList<String>>();
+	    
+	    //Pattern matcher that will be used to properly extract the name and link for each player
+	    Pattern p = Pattern.compile(".*\"(.*)\">(.*)<.*\\((.*)\\).*");
+	    Matcher m;
+	    
 		Parser parse1 = new Parser("https://www.pro-football-reference.com/players/" + currentLetter + "/");
+		
 		// parse1.getArticlePage("Ken Anderson");
-
+		
+		
 		// we are handling current players
 		// these are bolded so we select on element - "b"
 		Elements articleElements = parse1.currentDoc.select("b");
 		ArrayList<String> playersBold = new ArrayList<String>();
 		for (Element e : articleElements) {
+		    //Pattern matching to get the following:
+		    //m.group(1) = link for player
+		    //m.group(2) = name of player
+		    m = p.matcher(e.toString());
+		    if (m.find()) {
+		        String name = m.group(2).trim();
+		        if (!playerToLink.containsKey(name)) {
+		            playerToLink.put(name, new ArrayList<String>());
+		        }
+		        
+		        //Add the links for some player by name
+		        //This keeps track of all links for players under the same name
+		        playerToLink.get(name).add(m.group(1));
+		    }
 			// bold is mentioned on all pages at top we omit this it's not a player
 			// also some assorted bold text we don't want parse that out
 			if (!(e.text().equals("bold")) && e.text().contains("(") && e.text().contains(")")) {
@@ -51,11 +76,12 @@ public class PlayerParser {
 				playersBold.add(modified);
 			}
 		}
+		
 
 		String url = parse1.currentDoc.location();
 		// System.out.println(url);
 		for (String e : playersBold) {
-			// System.out.println(e);
+			//System.out.println(e);
 
 			// set name
 			Player person = new Player(e);
@@ -64,8 +90,18 @@ public class PlayerParser {
 			newParse.getArticles();
 			// navigate to players page
 
-			newParse.getArticlePage(e);
+			//newParse.getArticlePage(e);
+			
+			//Use the link corresponding to the player with the same name
+			
+			newParse.getArticlePage(playerToLink.get(e).get(0));
+			
+			//Make sure to delete the link that was visited for some particular player name
+			//If there are multiple players with the same name, we properly delete visited links
+			//So that we can visit the ones that have not yet been visited
+            playerToLink.get(e).remove(0);
 
+			
 			// String newUrl = newParse.currentDoc.location();
 			// System.out.println(newUrl);
 
@@ -75,19 +111,25 @@ public class PlayerParser {
 			Elements pEls = newParse.currentDoc.select("p");
 			try {
 				String position = pEls.get(1).text();
+				//System.out.println("position: " + position);
 				// this gives us Position : _
 				// we just want the position
 
 				// need this because some player don't have a position
 				if (position.contains("Position")) {
-
+				    //System.out.println("entered");
 					int spacePos = position.indexOf(" ");
 					String justPos = position.substring(spacePos + 1, position.length());
+					
+					//Handles cases such as "QB Throws: Right" and takes the substring of just QB
+					if (justPos.length() > 4) {
+					    justPos = justPos.substring(0,3).trim();
+					}
+					
 					if (justPos.length() >= 1 && justPos.length() <= 4 && justPos.matches("[a-zA-Z]+")) {
 						person.setPosition(justPos);
-						// System.out.println(justPos);
-					}
-
+					} 
+					//System.out.println(justPos);
 				} else {
 					person.setPosition("NA");
 					// System.out.println("NA");
@@ -110,8 +152,7 @@ public class PlayerParser {
 				if (articleElements1.get(i).text().contains("Year")) {
 					continue;
 				}
-				
-				
+			
 				// child(0) = year & child(2) = team
 				// break on career so that we dont get extra info we do not want
 				if (articleElements1.get(i).child(0).text().contains("Career")) {
@@ -157,7 +198,7 @@ public class PlayerParser {
 								}catch (IllegalArgumentException excep) {
 									
 								}
-								System.out.println(year);
+								//System.out.println(year);
 								
 
 								
@@ -203,6 +244,9 @@ public class PlayerParser {
 		}
 //			Player ab = playerList.get(0);
 //			ab.getTeams();
+		
+		
+		//System.out.println(playerToLink);
 	}
 
 	public ArrayList<Player> getPlayerList() {
