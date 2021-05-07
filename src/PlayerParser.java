@@ -1,11 +1,9 @@
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -16,8 +14,13 @@ public class PlayerParser {
 	public PlayerParser() {
 		setPlayerList(new ArrayList<Player>());
 		String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		//String for loading animation
 		String load = "Loading status: [";
 		System.out.println(load);
+		
+		//Iterate through the alphabet to get all players
+		//Please allow 3-5 minutes for this operation to finish.
+		//Enjoy the loading animation in the meanwhile
 		for (int i = 0; i < alphabet.length(); i++) {
 			playersOfChar(Character.toString(alphabet.charAt(i)));
 			load += "|";
@@ -63,8 +66,7 @@ public class PlayerParser {
 		        //This keeps track of all links for players under the same name
 		        playerToLink.get(name).add(m.group(1));
 		    }
-			// bold is mentioned on all pages at top we omit this it's not a player
-			// also some assorted bold text we don't want parse that out
+			// Ensure that "bold" is not selected, since it is present in headers
 			if (!(e.text().equals("bold")) && e.text().contains("(") && e.text().contains(")")) {
 				// System.out.println(e.text());
 
@@ -101,10 +103,6 @@ public class PlayerParser {
 			//So that we can visit the ones that have not yet been visited
             playerToLink.get(e).remove(0);
 
-			
-			// String newUrl = newParse.currentDoc.location();
-			// System.out.println(newUrl);
-
 			// we need to get the position since we have repeat names
 			// the positions are text of a bold marker
 			// position is always the third strong element
@@ -136,24 +134,22 @@ public class PlayerParser {
 
 				}
 			} catch (IllegalArgumentException error) {
-				// some player dont
+				//System.out.println("ILLEGAL ARGUMENT");
 
 			}
 
-			// now we load the teams played into the player object@
-			// we will break at the yr 2020 bc 2021 has not been added to the page
-			// still need to handle cases where someone was on multiple teams in a single
+			// Now we load the teams played into the player object@
 
 			Elements articleElements1 = newParse.currentDoc.select("tr");
 
-			// remove first tr element so no for-each
+			// Iterate through the list, need to keep track of i so a for-each loop is not used
 			for (int i = 0; i < articleElements1.size(); i++) {
-
+				// child(0) = year & child(2) = team
 				if (articleElements1.get(i).text().contains("Year")) {
 					continue;
 				}
 			
-				// child(0) = year & child(2) = team
+				
 				// break on career so that we dont get extra info we do not want
 				if (articleElements1.get(i).child(0).text().contains("Career")) {
 					break;
@@ -164,7 +160,6 @@ public class PlayerParser {
 				}
 
 				String year = articleElements1.get(i).child(0).text();
-				int errorCounter = 0;
 				try {
 					if (year.length() >= 4) {
 						String mod = year.substring(0, 4);
@@ -173,13 +168,15 @@ public class PlayerParser {
 						int yr = Integer.parseInt(mod);
 						person.setTeamAndYear(articleElements1.get(i).child(2).text(), yr);
 					} else if (year.length() == 0) {
-						// System.out.println("zer otest ");
+						// System.out.println("zero test ");
+						
+						/*****This indicates a mid-season TRADE and needs to be handled*****/
 
 						try {
 //							if (articleElements1.get(i+2).child(0).text().contains("Career")) {
 //								break;
 //							}
-							// do try cause this wont work if this is at the first year
+							// Skip over the first entry
 							if (i > 0) {
 								String yearRetained = articleElements1.get(i - 1).child(0).text();
 								String modded = yearRetained.substring(0, 4);
@@ -199,18 +196,10 @@ public class PlayerParser {
 									
 								}
 								//System.out.println(year);
-								
 
-								
-								//had an error previously when 2TM was at the end of the table.
-//								if (yearRetained.contains("2020")) {
-//									//System.out.println("breaking!!");
-//									break;
-//								}
-								
 								i = i + 2;
 								
-								//now skip 2 so we dont get repeats and we move onto the next category
+								// Skip 2 and move on to the next year 
 								
 								
 							}
@@ -220,20 +209,12 @@ public class PlayerParser {
 					}
 
 				} catch (NumberFormatException err) {
-					errorCounter++;
-//					System.out.println("-------------");
-					System.out.println("error with parsing year to int:" + errorCounter);
+					System.out.println("error with parsing year to int:");
 					System.out.println(person.getName());
-//					System.out.println(year);
-//					System.out.println("-------------");
-
-					
-					// err.printStackTrace();
 				}
 
 			}
-			// add the player to the list
-			// still some glitches with certain -players
+			//If a position is not listed
 			if (person.getPosition() == null) {
 				person.setPosition("NA");
 //				System.out.println(person.getName());
@@ -242,11 +223,6 @@ public class PlayerParser {
 			playerList.add(person);
 
 		}
-//			Player ab = playerList.get(0);
-//			ab.getTeams();
-		
-		
-		//System.out.println(playerToLink);
 	}
 
 	public ArrayList<Player> getPlayerList() {

@@ -14,6 +14,7 @@ public class AdjacencyList  {
     }
     
     public void initialize() {
+    	//Initializes the keys
         for (Player p : li) {
             if (!adjList.containsKey(p)) {
                 adjList.put(p, new ArrayList<Player>());

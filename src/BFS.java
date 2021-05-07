@@ -16,6 +16,7 @@ public class BFS {
     }
     
     public ArrayList<Player> bfsTraversal() {
+    	//Runs a BFS algorithm on the Adjacency List, stored as a map
         
         ArrayList<Player> path = new ArrayList<Player>();
         

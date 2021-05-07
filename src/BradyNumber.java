@@ -36,6 +36,8 @@ public class BradyNumber extends JFrame implements Runnable {
     private boolean running;
     
     public void run() {
+    	//Parses from the web, creates a playerList, and creates an Adjacency List
+    	//Please allow 3-5 minutes for the parsing to finish
     	PlayerParser parser = new PlayerParser();
     	ArrayList<Player> playerList = parser.getPlayerList();
     	AdjacencyList aList = new AdjacencyList(playerList);
@@ -46,6 +48,7 @@ public class BradyNumber extends JFrame implements Runnable {
         
         //Frame Label
         final JFrame frame = new JFrame("Brady Number");
+        //Attempted ASCII art
         //String asciiArt = new String(""
 //        		+ "        _.-=\"\"=-._ \r\n"
 //        		+ "      .'\\\\-++++-//'.\r\n"
@@ -62,6 +65,7 @@ public class BradyNumber extends JFrame implements Runnable {
 //        JLabel ascii5 = new JLabel("        -.-=\\\"\\\"=-.-");
         
         
+        //Opening window
         JLabel intro1 = new JLabel("  Welcome to Brady number!");
         JLabel introWhitespace1 = new JLabel("");
         JLabel intro2 = new JLabel("  Please click the instructions button if you are unfamiliar with the input format  ");
@@ -82,7 +86,7 @@ public class BradyNumber extends JFrame implements Runnable {
         JPanel introPanel = new JPanel();
         introPanel.setLayout(new BoxLayout(introPanel, BoxLayout.Y_AXIS));
       
-        
+        //Setting up the hyperlink
         introLink.setForeground(Color.blue.darker());
         introLink.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         introLink.addMouseListener(new MouseAdapter() {
@@ -104,6 +108,8 @@ public class BradyNumber extends JFrame implements Runnable {
         	    }
         	}
         });
+        
+        //Add all elements to the intro panel, formatted as a vertically-oriented box
         introPanel.add(intro1);
 //        introPanel.add(ascii1);
 //        //introPanel.add(ascii2);
@@ -134,8 +140,8 @@ public class BradyNumber extends JFrame implements Runnable {
         statusPanel.add(statusBar);
         
 
+        //Panels to hold the user input areas and button
         JPanel controlPanel1 = new JPanel();
-        
         JPanel controlPanel2 = new JPanel();
 
         
@@ -149,14 +155,8 @@ public class BradyNumber extends JFrame implements Runnable {
             }
         });
         
-        //Start Button
-        final JButton start = new JButton("Start");
-        start.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e2) {
-            }
-        });
-        
-        //Menu Button
+
+        //Directions Button
         final JButton menu = new JButton("Directions");
         menu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e3) {
@@ -177,8 +177,8 @@ public class BradyNumber extends JFrame implements Runnable {
         
         //Enter Button
         final JButton enter = new JButton("Enter");
-        BufferedWriter bw = null;
-        FileWriter f = null;
+//        BufferedWriter bw = null;
+//        FileWriter f = null;
         
         enter.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e4) {
@@ -190,6 +190,7 @@ public class BradyNumber extends JFrame implements Runnable {
                             + "\nCheck out Pro Football Focus to ensure you are inputting a correctly-spelled active player",
                             "Invalid input!", JOptionPane.INFORMATION_MESSAGE);
             	} else {
+            	//Parse the input for the name and check if the position was provided
             	String entry1 = userInput1.getText();
             	String name1 = new String();
             	String position1 = new String();
@@ -205,6 +206,7 @@ public class BradyNumber extends JFrame implements Runnable {
 //            	System.out.println(name1);
 //            	System.out.println(position1);
             	
+            	//Parse the second input for name/pos
             	String entry2 = userInput2.getText();
             	String name2 = new String();
             	String position2 = new String();
@@ -220,11 +222,12 @@ public class BradyNumber extends JFrame implements Runnable {
 //            	System.out.println(name2);
 //            	System.out.println(position2);
             	
+            	//Assign players to the string inputs
             	Player player1 = new Player("");
             	Player player2 = new Player("");
             	boolean assigned1 = false;
             	boolean assigned2 = false;
-            	//Remove duplicates
+            	//Remove duplicates just in case
             	Set<Player> playerSet = new HashSet<Player>(playerList);
             	//Keep track of the count for each player in case of duplicates
             	HashMap<String,Integer> playerCount = new HashMap<String,Integer>();
@@ -236,6 +239,8 @@ public class BradyNumber extends JFrame implements Runnable {
             	    }
             	    
             	}
+            	//Handling duplicate name inputs
+            	
             	//Keep track of whether or not input player has duplicate name
             	boolean duplicateName = false;
             	
@@ -276,6 +281,7 @@ public class BradyNumber extends JFrame implements Runnable {
             	 
             	 }
             	
+            	//Duplicate name provided without a position
             	if (duplicateName) {
             	    JOptionPane.showMessageDialog(null,
                             "You entered a player who shares a name with at least 1 other another active player.\n"
@@ -292,6 +298,8 @@ public class BradyNumber extends JFrame implements Runnable {
                             + "\nCheck out Pro Football Focus to ensure you are inputting a correctly-spelled active player",
                             "Invalid input!", JOptionPane.INFORMATION_MESSAGE);
             	} else {
+            		
+            		//BFS is ran on the 2 players 
             		BFS searcher = new BFS(aList.getAdjList(), player1, player2);
             		ArrayList<Player> bfsOutput = searcher.bfsTraversal();
             		int bradyNumber = bfsOutput.size() - 1;
@@ -305,6 +313,8 @@ public class BradyNumber extends JFrame implements Runnable {
             				distance += adder;
             			}
             		}
+            		
+            		//The Brady Number is displayed
             		JOptionPane.showMessageDialog(null,
                             "The Brady number between " + player1.getName() + " and " + player2.getName() + 
                             " is " + bradyNumber + "!\n"
@@ -316,7 +326,7 @@ public class BradyNumber extends JFrame implements Runnable {
             }
         });
         
-        //Add buttons to the panels  
+        //Add buttons and userInput areas to the panels  
         controlPanel1.setLayout(new BoxLayout(controlPanel1, BoxLayout.Y_AXIS));
         JLabel player1Text = new JLabel("Player 1: ");
         userInput1.setText("");

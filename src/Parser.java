@@ -11,10 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Parser {
+	//A lot of methods are borrowed from HW3, since it sets up the web scraping framework
 
 	private String baseURL;
 	public Document currentDoc;
 	Map<String, String> articleMap;
+	//Links that are already visited
+	private ArrayList<String> visited = new ArrayList<String>();
 
 	/*
 	 * Constructor that initializes the base URL and loads the document produced
@@ -26,7 +29,7 @@ public class Parser {
 			this.currentDoc = Jsoup.connect(this.baseURL).get();
 			// System.out.println(this.currentDoc);
 		} catch (IOException e) {
-			// System.out.println("Could not get the corgis :(");
+			System.out.println("Could not get the article");
 		}
 	}
 
@@ -36,7 +39,7 @@ public class Parser {
 			this.currentDoc = Jsoup.connect(this.baseURL).get();
 			// System.out.println(this.currentDoc);
 		} catch (IOException e) {
-			// System.out.println("Could not get the corgis :(");
+			System.out.println("Could not get the article :(");
 		}
 
 	}
@@ -68,8 +71,7 @@ public class Parser {
 
 	}
 
-	//Links that are already visited
-	private ArrayList<String> visited = new ArrayList<String>();
+	
 	/*
 	 * Gets the document for a URL on our currentDoc
 	 * 
@@ -80,9 +82,8 @@ public class Parser {
 	 */
 	public String getArticlePage(String articleTitle) {
 	    String url = articleTitle;
-		//String url = this.articleMap.get(articleTitle);
 	    //System.out.println(url);
-		// quick mod here just appends the start on in case we need it
+		// Modification here just appends the start on in case we need it
 		if (url != null && !url.contains("https:")) {
 			url = "https://www.pro-football-reference.com" + url;
 		}
@@ -97,20 +98,17 @@ public class Parser {
 		Element head = this.currentDoc.selectFirst("head");
 		Element title = head.selectFirst("title");
 
-		// Element description =
-		// this.currentDoc.select("p.description__1bzzdbaw8q").first();
+		// Element description = this.currentDoc.select("p.description__1bzzdbaw8q").first();
 		// System.out.println(description.text());
 		return title.text();
 	}
 
-	/*
-	 * Gets the image url from our page for the associated keyword
-	 * 
-	 * @param keyword This should be the word in the image caption for the image we
-	 * want to get
-	 * 
-	 * @return the image url for the associated keyword
-	 */
+	public ArrayList<String> getVisited() {
+		return visited;
+	}
 
+	public void setVisited(ArrayList<String> visited) {
+		this.visited = visited;
+	}
 
 }
